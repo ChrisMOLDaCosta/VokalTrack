@@ -1,110 +1,100 @@
-// App.js
-// Fungsi utama aplikasi VokalTrack untuk pembelajaran vokal
-
-import { ScrollView, StyleSheet, Text, View, StatusBar } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Mic, Music } from 'lucide-react-native'; // Icon mikrofon untuk tema vokal
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View, StatusBar, FlatList, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import { Bell, Menu } from 'lucide-react-native';
 import { colors, fontType } from './assets/theme';
-import ListLatihan from './src/components/ListLatihan'; // Komponen daftar latihan vokal
+import ListLatihan from './src/components/ListLatihan';
 import { useFonts } from 'expo-font';
+import { CategoryList } from './src/data/categories';
+import { useState } from 'react';
 
-export default function App() {
-  // Memuat font yang sudah didefinisikan di fonts.js
-  const [loaded] = useFonts(fontType);
+// Komponen ItemCategory (props)
+const ItemCategory = ({ item, onPress, color }) => {
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View style={categoryStyle.item}>
+        <Text style={{ ...categoryStyle.title, color }}>{item.categoryName}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
-  // Jika font belum selesai dimuat, tampilkan null (loading)
-  if (!loaded) {
-    return null;
-  }
+// Komponen FlatListCategory dengan state selected
+const FlatListCategory = () => {
+  const [selected, setSelected] = useState(1); // kategori pertama (Pemanasan) aktif
+
+  const renderItem = ({ item }) => {
+    const color = item.id === selected ? colors.blue() : colors.grey();
+    return (
+      <ItemCategory
+        item={item}
+        onPress={() => setSelected(item.id)}
+        color={color}
+      />
+    );
+  };
 
   return (
-    // SafeAreaView memastikan konten tidak menembus status bar
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white()} />
+    <FlatList
+      data={CategoryList}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderItem}
+      ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+      contentContainerStyle={{ paddingHorizontal: 24 }}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+    />
+  );
+};
 
-      {/* Header aplikasi */}
-      <View style={styles.header}>
-        <Text style={styles.title}>VokalTrack</Text>
-        <Music color={colors.blue()} size={24} /> {/* Icon musik sebagai pengganti Bell */}
-      </View>
+export default function App() {
+  const [loaded] = useFonts(fontType);
+  if (!loaded) return null;
 
-      {/* Kategori latihan vokal (ScrollView horizontal) */}
-      <View style={styles.listCategory}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={{ ...category.item, marginLeft: 24 }}>
-            <Text style={{ ...category.title, color: colors.blue() }}>
-              Semua
-            </Text>
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white()} />
+        <View style={styles.header}>
+          <Text style={styles.title}>VokalTrack</Text>
+          <View style={styles.headerRight}>
+            <Bell color={colors.black()} size={24} />
+            <Menu color={colors.black()} size={24} />
           </View>
-          <View style={category.item}>
-            <Text style={category.title}>Pernafasan</Text>
+        </View>
+        <Text style={styles.subtitle}>Aplikasi mencatat latihan menyanyi</Text>
+        <View style={styles.banner}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.bannerTitle}>Latihan Vokal Setiap Hari</Text>
+            <Text style={styles.bannerDesc}>Catat progres latihan dan perkembangan suara kamu</Text>
           </View>
-          <View style={category.item}>
-            <Text style={category.title}>Teknik Vokal</Text>
-          </View>
-          <View style={category.item}>
-            <Text style={category.title}>Artikulasi</Text>
-          </View>
-          <View style={category.item}>
-            <Text style={category.title}>Resonansi</Text>
-          </View>
-          <View style={{ ...category.item, marginRight: 24 }}>
-            <Text style={category.title}>Pitch</Text>
-          </View>
-        </ScrollView>
-      </View>
-
-      {/* Komponen daftar latihan vokal */}
-      <ListLatihan styles={styles} />
-    </SafeAreaView>
+          <Image source={{ uri: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d' }} style={styles.bannerImage} />
+        </View>
+        <View style={styles.listCategory}>
+          <FlatListCategory />
+        </View>
+        <ListLatihan styles={styles} />
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
-// Style untuk komponen utama
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white(),
-    shadowColor: colors.white(),
-  },
-  header: {
-    paddingHorizontal: 24,
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 52,
-    paddingTop: 8,
-    paddingBottom: 4,
-    backgroundColor: colors.white(),
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: 'Pjs-ExtraBold',
-    color: colors.black(),
-  },
-  listCategory: {
-    paddingVertical: 10,
-  },
-  listLatihan: {
-    paddingVertical: 10,
-    gap: 10,
-  },
+  container: { flex: 1, backgroundColor: colors.white() },
+  header: { paddingHorizontal: 24, paddingTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerRight: { flexDirection: 'row', gap: 18, alignItems: 'center' },
+  title: { fontSize: 20, fontFamily: 'Pjs-ExtraBold', color: colors.black() },
+  subtitle: { marginLeft: 24, marginTop: 4, fontSize: 13, color: colors.grey(), fontFamily: 'Pjs-Regular' },
+  banner: { flexDirection: 'row', backgroundColor: colors.blue(), marginHorizontal: 16, marginTop: 16, padding: 16, borderRadius: 18, alignItems: 'center' },
+  bannerTitle: { color: colors.white(), fontFamily: 'Pjs-Bold', fontSize: 14 },
+  bannerDesc: { color: colors.white(0.7), fontSize: 12, marginTop: 4, fontFamily: 'Pjs-Regular' },
+  bannerImage: { width: 60, height: 60, borderRadius: 12 },
+  listCategory: { paddingVertical: 10 },
+  listLatihan: { paddingVertical: 10, gap: 10 },
+  listCard: { paddingVertical: 10, gap: 15 },
 });
 
-// Style untuk kategori
-const category = StyleSheet.create({
-  item: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 25,
-    alignItems: 'center',
-    backgroundColor: colors.grey(0.08),
-    marginHorizontal: 5,
-  },
-  title: {
-    fontFamily: 'Pjs-SemiBold',
-    fontSize: 14,
-    lineHeight: 18,
-    color: colors.grey(),
-  },
+const categoryStyle = StyleSheet.create({
+  item: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 25, backgroundColor: colors.grey(0.08), marginHorizontal: 6 },
+  title: { fontFamily: 'Pjs-SemiBold', fontSize: 13, color: colors.grey() },
 });
