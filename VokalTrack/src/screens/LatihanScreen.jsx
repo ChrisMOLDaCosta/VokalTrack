@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   TouchableOpacity,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Search, Flame, Star } from 'lucide-react-native';
@@ -13,6 +14,7 @@ import { colors } from '../../assets/theme';
 import { LatihanList } from '../data/latihan';
 import ItemSmall from '../components/ItemSmall';
 
+// Data kategori filter
 const categoryFilters = [
   { id: 1, name: 'Semua' },
   { id: 2, name: 'Pemanasan' },
@@ -24,15 +26,18 @@ const categoryFilters = [
   { id: 8, name: 'Vokal Power' },
 ];
 
+// Data untuk section populer
 const popularLatihan = LatihanList.slice(2, 6);
 const recentSearches = ['Pemanasan', 'Pernapasan', 'Vokal Power', 'Artikulasi', 'Resonansi'];
 
+// Komponen chip pencarian
 const RecentChip = ({ label }) => (
   <TouchableOpacity style={styles.chip}>
     <Text style={styles.chipText}>{label}</Text>
   </TouchableOpacity>
 );
 
+// Komponen card populer
 const PopularCard = ({ item }) => {
   const navigation = useNavigation();
   return (
@@ -58,7 +63,9 @@ const PopularCard = ({ item }) => {
 
 export default function LatihanScreen() {
   const [selectedCategoryId, setSelectedCategoryId] = useState(1);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
+  // Filter latihan berdasarkan kategori
   const filteredLatihan = selectedCategoryId === 1
     ? LatihanList
     : LatihanList.filter(item => {
@@ -67,67 +74,120 @@ export default function LatihanScreen() {
         return item.category.toLowerCase() === selectedCategory.name.toLowerCase();
       });
 
+  // Animasi: batasi scroll (0-100) untuk membuat efek translate
+  const diffClampY = Animated.diffClamp(scrollY, 0, 100);
+  const searchY = diffClampY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -100],
+    extrapolate: 'clamp',
+  });
+  const recentY = diffClampY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [0, -80],
+    extrapolate: 'clamp',
+  });
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
         contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.searchSection}>
-          <View style={styles.searchBar}>
-            <Search size={20} color={colors.grey(0.6)} />
-            <Text style={styles.searchPlaceholder}>Cari latihan vokal...</Text>
+        {/* Search bar dengan animasi translateY */}
+        <Animated.View style={{ transform: [{ translateY: searchY }] }}>
+          <View style={styles.searchSection}>
+            <View style={styles.searchBar}>
+              <Search size={20} color={colors.grey(0.6)} />
+              <Text style={styles.searchPlaceholder}>Cari latihan vokal...</Text>
+            </View>
           </View>
-        </View>
+        </Animated.View>
 
-        <View style={styles.categorySection}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryContainer}>
-            {categoryFilters.map((cat) => (
-              <TouchableOpacity
-                key={cat.id}
-                style={[styles.categoryItem, selectedCategoryId === cat.id && styles.categoryItemActive]}
-                onPress={() => setSelectedCategoryId(cat.id)}
-              >
-                <Text style={[styles.categoryText, selectedCategoryId === cat.id && styles.categoryTextActive]}>
-                  {cat.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        {/* Recent search dan kategori dengan animasi */}
+        <Animated.View style={{ transform: [{ translateY: recentY }] }}>
+          <View style={styles.categorySection}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoryContainer}
+            >
+              {categoryFilters.map((cat) => (
+                <TouchableOpacity
+                  key={cat.id}
+                  style={[
+                    styles.categoryItem,
+                    selectedCategoryId === cat.id && styles.categoryItemActive,
+                  ]}
+                  onPress={() => setSelectedCategoryId(cat.id)}
+                >
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      selectedCategoryId === cat.id && styles.categoryTextActive,
+                    ]}
+                  >
+                    {cat.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Pencarian Terbaru</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipContainer}>
-            {recentSearches.map((label, idx) => <RecentChip key={idx} label={label} />)}
-          </ScrollView>
-        </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Pencarian Terbaru</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.chipContainer}
+            >
+              {recentSearches.map((label, idx) => (
+                <RecentChip key={idx} label={label} />
+              ))}
+            </ScrollView>
+          </View>
+        </Animated.View>
 
+        {/* Daftar latihan statis */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionHeaderTitle}>Semua Latihan</Text>
-            <TouchableOpacity><Text style={styles.seeAllText}>Lihat semua</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>Lihat semua</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.listContainer}>
-            {filteredLatihan.map((item, index) => <ItemSmall item={item} key={index} />)}
+            {filteredLatihan.map((item, index) => (
+              <ItemSmall item={item} key={index} />
+            ))}
           </View>
         </View>
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionHeaderTitle}>Populer Minggu Ini</Text>
-            <TouchableOpacity><Text style={styles.seeAllText}>Lihat semua</Text></TouchableOpacity>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>Lihat semua</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.listContainer}>
-            {popularLatihan.map((item) => <PopularCard key={item.id} item={item} />)}
+            {popularLatihan.map((item) => (
+              <PopularCard key={item.id} item={item} />
+            ))}
           </View>
         </View>
 
         <View style={styles.tipsCard}>
           <Text style={styles.tipsTitle}>Tips Vokal</Text>
-          <Text style={styles.tipsText}>Lakukan pemanasan 5-10 menit sebelum latihan. Minum air putih yang cukup, hindari kafein berlebih.</Text>
+          <Text style={styles.tipsText}>
+            Lakukan pemanasan 5-10 menit sebelum latihan. Minum air putih yang cukup, hindari kafein berlebih.
+          </Text>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
@@ -136,7 +196,15 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white() },
   scrollContent: { paddingBottom: 90 },
   searchSection: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 8 },
-  searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.grey(0.06), borderRadius: 14, paddingHorizontal: 16, paddingVertical: 12, gap: 12 },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.grey(0.06),
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 12,
+  },
   searchPlaceholder: { fontSize: 15, fontFamily: 'Pjs-Regular', color: colors.grey(0.5), flex: 1 },
   categorySection: { marginTop: 8, marginBottom: 8 },
   categoryContainer: { paddingHorizontal: 20, gap: 10 },
@@ -153,7 +221,19 @@ const styles = StyleSheet.create({
   chip: { paddingHorizontal: 18, paddingVertical: 8, borderRadius: 30, backgroundColor: colors.grey(0.08), borderWidth: 0.5, borderColor: colors.grey(0.2) },
   chipText: { fontSize: 13, fontFamily: 'Pjs-Medium', color: colors.grey(0.7) },
   listContainer: { paddingHorizontal: 20, gap: 12 },
-  popularCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white(), borderRadius: 16, padding: 12, gap: 14, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
+  popularCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.white(),
+    borderRadius: 16,
+    padding: 12,
+    gap: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   popularIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.orange(0.15), justifyContent: 'center', alignItems: 'center' },
   popularContent: { flex: 1 },
   popularTitle: { fontSize: 15, fontFamily: 'Pjs-SemiBold', color: colors.black() },

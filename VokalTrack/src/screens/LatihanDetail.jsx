@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  ScrollView,
   TouchableOpacity,
   StatusBar,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Clock, MessageCircle, Heart, Bookmark, Share2 } from 'lucide-react-native';
@@ -25,13 +25,26 @@ export default function LatihanDetail() {
   const route = useRoute();
   const { latihanId } = route.params;
   const latihan = LatihanList.find(item => item.id === latihanId);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   if (!latihan) return null;
+
+  const diffClampY = Animated.diffClamp(scrollY, 0, 52);
+  const headerY = diffClampY.interpolate({
+    inputRange: [0, 52],
+    outputRange: [0, -52],
+    extrapolate: 'clamp',
+  });
+  const bottomBarY = diffClampY.interpolate({
+    inputRange: [0, 52],
+    outputRange: [0, 52],
+    extrapolate: 'clamp',
+  });
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white()} />
-      <View style={styles.header}>
+      <Animated.View style={[styles.header, { transform: [{ translateY: headerY }] }]}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <ArrowLeft color={colors.black()} size={24} />
         </TouchableOpacity>
@@ -40,9 +53,17 @@ export default function LatihanDetail() {
             <Share2 color={colors.black()} size={24} />
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        contentContainerStyle={styles.scrollContent}
+      >
         <Image source={{ uri: latihan.image }} style={styles.image} contentFit="cover" />
         <View style={styles.metaContainer}>
           <Text style={styles.category}>{latihan.category}</Text>
@@ -71,9 +92,9 @@ export default function LatihanDetail() {
           {'\n\n'}
           Tips: Pastikan Anda dalam keadaan rileks, minum air putih yang cukup, dan lakukan pemanasan vokal terlebih dahulu.
         </Text>
-      </ScrollView>
+      </Animated.ScrollView>
 
-      <View style={styles.bottomBar}>
+      <Animated.View style={[styles.bottomBar, { transform: [{ translateY: bottomBarY }] }]}>
         <TouchableOpacity style={styles.bookmarkButton}>
           <Bookmark color={colors.blue()} size={20} />
           <Text style={styles.bookmarkText}>Simpan</Text>
@@ -81,16 +102,29 @@ export default function LatihanDetail() {
         <TouchableOpacity style={styles.startButton}>
           <Text style={styles.startText}>Mulai Latihan</Text>
         </TouchableOpacity>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white() },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 12, paddingBottom: 8 },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
+    backgroundColor: colors.white(),
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
   headerRight: { flexDirection: 'row', gap: 16 },
-  scrollContent: { paddingHorizontal: 20, paddingBottom: 110 },
+  scrollContent: { paddingHorizontal: 20, paddingBottom: 110, paddingTop: 60 },
   image: { width: '100%', height: 200, borderRadius: 20, marginBottom: 16 },
   metaContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
   category: { fontSize: 14, fontFamily: 'Pjs-SemiBold', color: colors.blue() },
@@ -126,11 +160,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 30,
   },
-  bookmarkText: {
-    fontSize: 14,
-    fontFamily: 'Pjs-SemiBold',
-    color: colors.blue(),
-  },
+  bookmarkText: { fontSize: 14, fontFamily: 'Pjs-SemiBold', color: colors.blue() },
   startButton: {
     flex: 2,
     backgroundColor: colors.blue(),
@@ -139,9 +169,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  startText: {
-    fontSize: 14,
-    fontFamily: 'Pjs-SemiBold',
-    color: colors.white(),
-  },
+  startText: { fontSize: 14, fontFamily: 'Pjs-SemiBold', color: colors.white() },
 });
