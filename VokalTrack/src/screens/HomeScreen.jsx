@@ -1,4 +1,3 @@
-// src/screens/HomeScreen.jsx
 import React from 'react';
 import {
   ScrollView,
@@ -38,7 +37,7 @@ const FlatListCategory = () => {
       keyExtractor={(item) => item.id.toString()}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
-      contentContainerStyle={{ paddingHorizontal: 24 }}
+      contentContainerStyle={{ paddingHorizontal: 20 }}
       horizontal
       showsHorizontalScrollIndicator={false}
     />
@@ -63,9 +62,7 @@ export default function HomeScreen() {
       <View style={styles.banner}>
         <View style={{ flex: 1 }}>
           <Text style={styles.bannerTitle}>Latihan Vokal Setiap Hari</Text>
-          <Text style={styles.bannerDesc}>
-            Catat progres dan raih performa terbaikmu
-          </Text>
+          <Text style={styles.bannerDesc}>Catat progres dan raih performa terbaikmu</Text>
         </View>
         <Image
           source={{ uri: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d' }}
@@ -81,79 +78,20 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white(),
-  },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  headerRight: {
-    flexDirection: 'row',
-    gap: 18,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontFamily: 'Pjs-ExtraBold',
-    color: colors.black(),
-  },
-  subtitle: {
-    marginLeft: 24,
-    marginTop: 4,
-    fontSize: 13,
-    color: colors.grey(),
-    fontFamily: 'Pjs-Regular',
-  },
-  banner: {
-    flexDirection: 'row',
-    backgroundColor: colors.blue(),
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 18,
-    alignItems: 'center',
-  },
-  bannerTitle: {
-    color: colors.white(),
-    fontFamily: 'Pjs-Bold',
-    fontSize: 14,
-  },
-  bannerDesc: {
-    color: colors.white(0.7),
-    fontSize: 12,
-    marginTop: 4,
-    fontFamily: 'Pjs-Regular',
-  },
-  bannerImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-  },
-  listCategory: {
-    paddingVertical: 10,
-  },
-  listLatihan: {
-    paddingVertical: 10,
-    gap: 10,
-  },
+  container: { flex: 1, backgroundColor: colors.white() },
+  header: { paddingHorizontal: 20, paddingTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerRight: { flexDirection: 'row', gap: 18, alignItems: 'center' },
+  title: { fontSize: 20, fontFamily: 'Pjs-ExtraBold', color: colors.black() },
+  subtitle: { marginLeft: 20, marginTop: 4, fontSize: 13, color: colors.grey(), fontFamily: 'Pjs-Regular' },
+  banner: { flexDirection: 'row', backgroundColor: colors.blue(), marginHorizontal: 20, marginTop: 16, padding: 16, borderRadius: 18, alignItems: 'center' },
+  bannerTitle: { color: colors.white(), fontFamily: 'Pjs-Bold', fontSize: 14 },
+  bannerDesc: { color: colors.white(0.7), fontSize: 12, marginTop: 4, fontFamily: 'Pjs-Regular' },
+  bannerImage: { width: 60, height: 60, borderRadius: 12 },
+  listCategory: { paddingVertical: 10 },
+  listLatihan: { paddingVertical: 10, gap: 10 },
 });
 
 const categoryStyle = StyleSheet.create({
-  item: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 25,
-    backgroundColor: colors.grey(0.08),
-    marginHorizontal: 6,
-  },
-  title: {
-    fontFamily: 'Pjs-SemiBold',
-    fontSize: 13,
-    color: colors.grey(),
-  },
+  item: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 25, backgroundColor: colors.grey(0.08), marginHorizontal: 6 },
+  title: { fontFamily: 'Pjs-SemiBold', fontSize: 13, color: colors.grey() },
 });

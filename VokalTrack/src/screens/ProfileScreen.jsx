@@ -1,13 +1,5 @@
-// src/screens/ProfileScreen.jsx
 import React, { useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { Settings, Edit2, LogOut } from 'lucide-react-native';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -24,33 +16,17 @@ const formatNumber = (num) => {
 };
 
 export default function ProfileScreen() {
-  const [following, setFollowing] = useState(ProfileData.following);
-  const [followers, setFollowers] = useState(ProfileData.follower);
-
+  const [following] = useState(ProfileData.following);
+  const [followers] = useState(ProfileData.follower);
   const userLatihan = LatihanList.slice(0, 4);
 
-  const handleFollow = () => {
-    Alert.alert('Info', 'Fitur follow akan tersedia di update berikutnya');
-  };
-
-  const handleEditProfile = () => {
-    Alert.alert('Edit Profil', 'Fitur edit profil akan segera hadir');
-  };
-
-  const handleSettings = () => {
-    Alert.alert('Pengaturan', 'Fitur pengaturan akan segera hadir');
-  };
-
-  const handleLogout = () => {
-    Alert.alert(
-      'Keluar',
-      'Apakah Anda yakin ingin keluar?',
-      [
-        { text: 'Batal', style: 'cancel' },
-        { text: 'Keluar', style: 'destructive', onPress: () => Alert.alert('Logout', 'Terima kasih telah menggunakan VokalTrack') },
-      ]
-    );
-  };
+  const handleFollow = () => Alert.alert('Info', 'Fitur follow akan tersedia di update berikutnya');
+  const handleEditProfile = () => Alert.alert('Edit Profil', 'Fitur edit profil akan segera hadir');
+  const handleSettings = () => Alert.alert('Pengaturan', 'Fitur pengaturan akan segera hadir');
+  const handleLogout = () => Alert.alert('Keluar', 'Apakah Anda yakin ingin keluar?', [
+    { text: 'Batal', style: 'cancel' },
+    { text: 'Keluar', style: 'destructive', onPress: () => Alert.alert('Logout', 'Terima kasih telah menggunakan VokalTrack') },
+  ]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -62,21 +38,12 @@ export default function ProfileScreen() {
           <LogOut color={colors.black()} size={24} />
         </TouchableOpacity>
       </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <View style={styles.profileHeader}>
-          <Image
-            style={styles.profileImage}
-            source={{ uri: ProfileData.profilePict }}
-            contentFit="cover"
-          />
+          <Image style={styles.profileImage} source={{ uri: ProfileData.profilePict }} contentFit="cover" />
           <Text style={styles.name}>{ProfileData.name}</Text>
           <Text style={styles.bio}>Vocalis | VokalTrack User</Text>
           <Text style={styles.memberSince}>Bergabung sejak {ProfileData.createdAt}</Text>
-
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>{userLatihan.length}</Text>
@@ -91,23 +58,15 @@ export default function ProfileScreen() {
               <Text style={styles.statLabel}>Pengikut</Text>
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            style={styles.editProfileButton}
-            onPress={handleEditProfile}
-            activeOpacity={0.7}
-          >
+          <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile} activeOpacity={0.7}>
             <Edit2 size={16} color={colors.white()} />
             <Text style={styles.editProfileText}>Edit Profil</Text>
           </TouchableOpacity>
         </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Latihan Terbaru</Text>
           <View style={styles.latihanList}>
-            {userLatihan.map((item, index) => (
-              <ItemSmall item={item} key={index} />
-            ))}
+            {userLatihan.map((item, index) => <ItemSmall item={item} key={index} />)}
           </View>
         </View>
       </ScrollView>
@@ -116,97 +75,21 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white(),
-  },
-  header: {
-    paddingHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 52,
-    marginTop: 8,
-  },
-  scrollContent: {
-    paddingBottom: 40,
-  },
-  profileHeader: {
-    alignItems: 'center',
-    marginTop: 8,
-    paddingHorizontal: 20,
-    gap: 6,
-  },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: colors.blue(),
-  },
-  name: {
-    fontSize: 22,
-    fontFamily: 'Pjs-Bold',
-    color: colors.black(),
-    marginTop: 8,
-  },
-  bio: {
-    fontSize: 14,
-    fontFamily: 'Pjs-Medium',
-    color: colors.grey(0.7),
-  },
-  memberSince: {
-    fontSize: 12,
-    fontFamily: 'Pjs-Regular',
-    color: colors.grey(0.6),
-  },
-  statsContainer: {
-    flexDirection: 'row',
-    gap: 40,
-    marginTop: 12,
-    marginBottom: 8,
-  },
-  statItem: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  statValue: {
-    fontSize: 18,
-    fontFamily: 'Pjs-Bold',
-    color: colors.black(),
-  },
-  statLabel: {
-    fontSize: 12,
-    fontFamily: 'Pjs-Medium',
-    color: colors.grey(0.6),
-  },
-  editProfileButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 8,
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    backgroundColor: colors.blue(),
-    borderRadius: 30,
-  },
-  editProfileText: {
-    fontSize: 14,
-    fontFamily: 'Pjs-SemiBold',
-    color: colors.white(),
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontFamily: 'Pjs-Bold',
-    color: colors.black(),
-    paddingHorizontal: 20,
-    marginBottom: 12,
-  },
-  latihanList: {
-    paddingHorizontal: 20,
-    gap: 12,
-  },
+  container: { flex: 1, backgroundColor: colors.white() },
+  header: { paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 52, marginTop: 8 },
+  scrollContent: { paddingBottom: 90 },
+  profileHeader: { alignItems: 'center', marginTop: 8, paddingHorizontal: 20, gap: 6 },
+  profileImage: { width: 100, height: 100, borderRadius: 50, borderWidth: 2, borderColor: colors.blue() },
+  name: { fontSize: 22, fontFamily: 'Pjs-Bold', color: colors.black(), marginTop: 8 },
+  bio: { fontSize: 14, fontFamily: 'Pjs-Medium', color: colors.grey(0.7) },
+  memberSince: { fontSize: 12, fontFamily: 'Pjs-Regular', color: colors.grey(0.6) },
+  statsContainer: { flexDirection: 'row', gap: 40, marginTop: 12, marginBottom: 8 },
+  statItem: { alignItems: 'center', gap: 4 },
+  statValue: { fontSize: 18, fontFamily: 'Pjs-Bold', color: colors.black() },
+  statLabel: { fontSize: 12, fontFamily: 'Pjs-Medium', color: colors.grey(0.6) },
+  editProfileButton: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 8, paddingHorizontal: 24, paddingVertical: 10, backgroundColor: colors.blue(), borderRadius: 30 },
+  editProfileText: { fontSize: 14, fontFamily: 'Pjs-SemiBold', color: colors.white() },
+  section: { marginTop: 24 },
+  sectionTitle: { fontSize: 18, fontFamily: 'Pjs-Bold', color: colors.black(), paddingHorizontal: 20, marginBottom: 12 },
+  latihanList: { paddingHorizontal: 20, gap: 12 },
 });

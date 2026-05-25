@@ -7,7 +7,8 @@ export const LatihanList = [
     createdAt: '10 Mar 2025',
     totalComments: 12,
     duration: '15 menit',
-    level: 'Pemula'
+    level: 'Pemula',
+    totalLikes: 128,
   },
   {
     id: 2,
@@ -17,7 +18,8 @@ export const LatihanList = [
     createdAt: '12 Mar 2025',
     totalComments: 8,
     duration: '10 menit',
-    level: 'Menengah'
+    level: 'Menengah',
+    totalLikes: 95,
   },
   {
     id: 3,
@@ -27,7 +29,8 @@ export const LatihanList = [
     createdAt: '15 Mar 2025',
     totalComments: 24,
     duration: '12 menit',
-    level: 'Mahir'
+    level: 'Mahir',
+    totalLikes: 230,
   },
   {
     id: 4,
@@ -37,7 +40,8 @@ export const LatihanList = [
     createdAt: '18 Mar 2025',
     totalComments: 18,
     duration: '20 menit',
-    level: 'Menengah'
+    level: 'Menengah',
+    totalLikes: 156,
   },
   {
     id: 5,
@@ -47,7 +51,8 @@ export const LatihanList = [
     createdAt: '20 Mar 2025',
     totalComments: 9,
     duration: '8 menit',
-    level: 'Pemula'
+    level: 'Pemula',
+    totalLikes: 67,
   },
   {
     id: 6,
@@ -57,7 +62,8 @@ export const LatihanList = [
     createdAt: '22 Mar 2025',
     totalComments: 15,
     duration: '10 menit',
-    level: 'Menengah'
+    level: 'Menengah',
+    totalLikes: 112,
   },
   {
     id: 7,
@@ -67,7 +73,8 @@ export const LatihanList = [
     createdAt: '25 Mar 2025',
     totalComments: 21,
     duration: '12 menit',
-    level: 'Mahir'
+    level: 'Mahir',
+    totalLikes: 189,
   },
   {
     id: 8,
@@ -77,6 +84,7 @@ export const LatihanList = [
     createdAt: '28 Mar 2025',
     totalComments: 32,
     duration: '18 menit',
-    level: 'Mahir'
+    level: 'Mahir',
+    totalLikes: 275,
   },
 ];

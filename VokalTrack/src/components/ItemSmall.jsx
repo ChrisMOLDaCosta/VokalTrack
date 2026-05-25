@@ -1,11 +1,18 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { Clock, MessageCircle } from "lucide-react-native";
 import { colors } from "../../assets/theme";
+import { useNavigation } from "@react-navigation/native";
 
 const ItemSmall = ({ item }) => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.cardItem}>
+    <TouchableOpacity
+      style={styles.cardItem}
+      activeOpacity={0.7}
+      onPress={() => navigation.navigate("LatihanDetail", { latihanId: item.id })}
+    >
       <Image
         style={styles.cardImage}
         source={{ uri: item.image }}
@@ -28,12 +35,18 @@ const ItemSmall = ({ item }) => {
           <Text style={styles.cardText}>{item.totalComments}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  cardItem: { backgroundColor: colors.blue(0.03), flexDirection: "row", borderRadius: 10, marginHorizontal: 24, marginVertical: 5 },
+  cardItem: {
+    backgroundColor: colors.blue(0.03),
+    flexDirection: "row",
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginVertical: 5,
+  },
   cardCategory: { color: colors.blue(), fontSize: 10, fontFamily: "Pjs-SemiBold" },
   cardTitle: { fontSize: 14, fontFamily: "Pjs-Bold", color: colors.black() },
   cardText: { fontSize: 10, fontFamily: "Pjs-Medium", color: colors.grey(0.6) },
