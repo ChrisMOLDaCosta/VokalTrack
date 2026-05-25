@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-  FlatList,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, View, StatusBar, FlatList, TouchableOpacity, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Bell, Menu } from 'lucide-react-native';
 import { colors, fontType } from '../../assets/theme';
@@ -47,7 +38,6 @@ const FlatListCategory = () => {
 export default function HomeScreen() {
   const [loaded] = useFonts(fontType);
   if (!loaded) return null;
-
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white()} />
@@ -64,10 +54,7 @@ export default function HomeScreen() {
           <Text style={styles.bannerTitle}>Latihan Vokal Setiap Hari</Text>
           <Text style={styles.bannerDesc}>Catat progres dan raih performa terbaikmu</Text>
         </View>
-        <Image
-          source={{ uri: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d' }}
-          style={styles.bannerImage}
-        />
+        <Image source={{ uri: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d' }} style={styles.bannerImage} />
       </View>
       <View style={styles.listCategory}>
         <FlatListCategory />
@@ -76,7 +63,6 @@ export default function HomeScreen() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white() },
   header: { paddingHorizontal: 20, paddingTop: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
@@ -90,7 +76,6 @@ const styles = StyleSheet.create({
   listCategory: { paddingVertical: 10 },
   listLatihan: { paddingVertical: 10, gap: 10 },
 });
-
 const categoryStyle = StyleSheet.create({
   item: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 25, backgroundColor: colors.grey(0.08), marginHorizontal: 6 },
   title: { fontFamily: 'Pjs-SemiBold', fontSize: 13, color: colors.grey() },

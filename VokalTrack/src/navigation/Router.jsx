@@ -15,6 +15,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import TipsScreen from '../screens/TipsScreen';
 import LatihanDetail from '../screens/LatihanDetail';
 import AddLatihanForm from '../screens/AddLatihanForm';
+import EditLatihanForm from '../screens/EditLatihanForm';
 import EditProfileForm from '../screens/EditProfileForm';
 
 const Tab = createBottomTabNavigator();
@@ -50,16 +51,14 @@ function MainApp() {
 
 export default function Router() {
   return (
-    <Stack.Navigator
-      initialRouteName="SplashScreen"
-      screenOptions={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }}
-    >
+    <Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false, ...TransitionPresets.SlideFromRightIOS }}>
       <Stack.Screen name="SplashScreen" component={SplashScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="MainApp" component={MainApp} />
       <Stack.Screen name="LatihanDetail" component={LatihanDetail} />
       <Stack.Screen name="AddLatihan" component={AddLatihanForm} />
+      <Stack.Screen name="EditLatihan" component={EditLatihanForm} />
       <Stack.Screen name="EditProfile" component={EditProfileForm} />
     </Stack.Navigator>
   );

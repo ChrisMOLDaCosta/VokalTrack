@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { colors } from '../../assets/theme';
 import axios from 'axios';
 
@@ -10,48 +10,60 @@ const API_URL = 'https://6a146b636c7db8aac0547e60.mockapi.io/latihan';
 const categoryOptions = ['Pemanasan', 'Pernapasan', 'Teknik Vokal', 'Artikulasi', 'Resonansi', 'Pitch Control', 'Vokal Power'];
 const levelOptions = ['Pemula', 'Menengah', 'Mahir'];
 
-export default function AddLatihanForm() {
+export default function EditLatihanForm() {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { latihanId } = route.params;
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
   const [duration, setDuration] = useState('');
   const [level, setLevel] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const handleSubmit = async () => {
+  useEffect(() => { fetchLatihan(); }, []);
+
+  const fetchLatihan = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/${latihanId}`);
+      const data = response.data;
+      setTitle(data.title);
+      setCategory(data.category);
+      setDuration(data.duration.replace(' menit', ''));
+      setLevel(data.level);
+      setImageUrl(data.image);
+    } catch (error) { Alert.alert('Error', 'Gagal memuat data'); }
+    finally { setLoading(false); }
+  };
+
+  const handleUpdate = async () => {
     if (!title.trim() || !category || !duration.trim() || !level) {
       Alert.alert('Error', 'Semua bidang harus diisi');
       return;
     }
-    if (isNaN(duration) || parseInt(duration) <= 0) {
-      Alert.alert('Error', 'Durasi harus angka positif');
-      return;
-    }
-    setLoading(true);
+    setSaving(true);
     try {
-      await axios.post(API_URL, {
-        title, category, duration: `${duration} menit`, level,
-        image: imageUrl || 'https://via.placeholder.com/300',
-        createdAt: new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }),
-        totalComments: 0, totalLikes: 0,
-        content: `Latihan ${title} untuk meningkatkan vokal.`
+      await axios.put(`${API_URL}/${latihanId}`, {
+        title, category, duration: `${duration} menit`, level, image: imageUrl
       });
-      Alert.alert('Berhasil', 'Latihan ditambahkan!');
+      Alert.alert('Berhasil', 'Latihan diperbarui!');
       navigation.goBack();
-    } catch (error) { Alert.alert('Error', 'Gagal menambahkan'); }
-    finally { setLoading(false); }
+    } catch (error) { Alert.alert('Error', 'Gagal memperbarui'); }
+    finally { setSaving(false); }
   };
+
+  if (loading) return <View style={{ flex:1, justifyContent:'center', alignItems:'center' }}><ActivityIndicator size="large" color={colors.blue()} /></View>;
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}><ArrowLeft color={colors.black()} size={24} /></TouchableOpacity>
-        <Text style={styles.title}>Tambah Latihan</Text><View style={{ width:24 }} />
+        <Text style={styles.title}>Edit Latihan</Text><View style={{ width:24 }} />
       </View>
       <ScrollView contentContainerStyle={styles.form}>
         <Text style={styles.label}>Judul Latihan</Text>
-        <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Contoh: Latihan Pernafasan Diafragma" />
+        <TextInput style={styles.input} value={title} onChangeText={setTitle} />
         <Text style={styles.label}>Kategori</Text>
         <View style={styles.optionsContainer}>
           {categoryOptions.map(cat => (
@@ -61,7 +73,7 @@ export default function AddLatihanForm() {
           ))}
         </View>
         <Text style={styles.label}>Durasi (menit)</Text>
-        <TextInput style={styles.input} value={duration} onChangeText={setDuration} keyboardType="numeric" placeholder="15" />
+        <TextInput style={styles.input} value={duration} onChangeText={setDuration} keyboardType="numeric" />
         <Text style={styles.label}>Level</Text>
         <View style={styles.optionsContainer}>
           {levelOptions.map(lvl => (
@@ -70,10 +82,10 @@ export default function AddLatihanForm() {
             </TouchableOpacity>
           ))}
         </View>
-        <Text style={styles.label}>URL Gambar (opsional)</Text>
-        <TextInput style={styles.input} value={imageUrl} onChangeText={setImageUrl} placeholder="https://..." />
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={loading}>
-          {loading ? <ActivityIndicator color={colors.white()} /> : <Text style={styles.submitText}>Simpan Latihan</Text>}
+        <Text style={styles.label}>URL Gambar</Text>
+        <TextInput style={styles.input} value={imageUrl} onChangeText={setImageUrl} />
+        <TouchableOpacity style={styles.submitButton} onPress={handleUpdate} disabled={saving}>
+          {saving ? <ActivityIndicator color={colors.white()} /> : <Text style={styles.submitText}>Update Latihan</Text>}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

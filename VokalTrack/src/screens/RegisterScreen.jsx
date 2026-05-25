@@ -1,17 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Alert,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -83,11 +71,7 @@ export default function RegisterScreen() {
               </View>
             </View>
             <View style={{ gap: 10 }}>
-              <TouchableOpacity
-                style={[styles.button, { backgroundColor: isDisabled ? colors.blue(0.5) : colors.blue() }]}
-                onPress={handleRegister}
-                disabled={isDisabled}
-              >
+              <TouchableOpacity style={[styles.button, { backgroundColor: isDisabled ? colors.blue(0.5) : colors.blue() }]} onPress={handleRegister} disabled={isDisabled}>
                 {loading ? <ActivityIndicator color={colors.white()} /> : <Text style={styles.buttonText}>DAFTAR</Text>}
               </TouchableOpacity>
               <View style={{ flexDirection: 'row', gap: 5, alignSelf: 'center' }}>
@@ -103,7 +87,6 @@ export default function RegisterScreen() {
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'space-between', paddingHorizontal: 24, paddingVertical: 40 },
   header: { fontSize: 32, fontFamily: 'Pjs-ExtraBold', color: colors.black() },

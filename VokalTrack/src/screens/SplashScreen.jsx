@@ -5,13 +5,11 @@ import { colors } from '../../assets/theme';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
-
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('Login');
     }, 1500);
   }, []);
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white()} />
@@ -24,7 +22,6 @@ export default function SplashScreen() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.white(), justifyContent: 'center', alignItems: 'center' },
   logo: { fontSize: 48, fontFamily: 'Pjs-ExtraBold', color: colors.black() },
