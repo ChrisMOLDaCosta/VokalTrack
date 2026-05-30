@@ -1,0 +1,8 @@
+// src/data/latihan.js
+export const LatihanList = [
+  { id: 1, title: 'Pemanasan Vokal Dasar', category: 'Pemanasan', duration: 15, level: 'Pemula', image: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800', rating: 4.5, total_comments: 12, total_likes: 128, content: 'Latihan pemanasan vokal yang aman', tips: 'Lakukan pemanasan 5-10 menit' },
+  { id: 2, title: 'Teknik Pernapasan Diafragma', category: 'Pernapasan', duration: 10, level: 'Pemula', image: 'https://images.unsplash.com/photo-1497032205916-ac775f0649ae?w=800', rating: 4.8, total_comments: 8, total_likes: 95, content: 'Pelajari teknik pernapasan diafragma', tips: 'Pastikan bahu tidak naik' },
+  { id: 3, title: 'Latihan Vokal Power', category: 'Vokal Power', duration: 12, level: 'Mahir', image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800', rating: 4.9, total_comments: 24, total_likes: 230, content: 'Tingkatkan power suara', tips: 'Jangan memaksakan suara' },
+  { id: 4, title: 'Pitch Control dengan Piano', category: 'Pitch Control', duration: 20, level: 'Menengah', image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800', rating: 4.6, total_comments: 18, total_likes: 156, content: 'Latihan pitch control', tips: 'Rekam suara Anda' },
+  { id: 5, title: 'Artikulasi & Diksi', category: 'Artikulasi', duration: 8, level: 'Pemula', image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=800', rating: 4.5, total_comments: 9, total_likes: 67, content: 'Latihan artikulasi', tips: 'Latihan di depan cermin' },
+];
